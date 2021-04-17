@@ -54,7 +54,7 @@ func main() {
 	bot.shutdown = make(chan bool)
 	HandleInterrupt()
 
-	defaultPath, err := config.GetFilePath("")
+	defaultPath, err := config.GetFilePath("./config.json")
 	if err != nil {
 		log.Fatal(err)
 	}

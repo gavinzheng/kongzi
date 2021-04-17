@@ -29,6 +29,7 @@ import (
 	"gotradebot/exchanges/kraken"
 	"gotradebot/exchanges/lakebtc"
 	"gotradebot/exchanges/localbitcoins"
+	"gotradebot/exchanges/ngkex"
 	"gotradebot/exchanges/okcoin"
 	"gotradebot/exchanges/okex"
 	"gotradebot/exchanges/poloniex"
@@ -175,6 +176,8 @@ func LoadExchange(name string, useWG bool, wg *sync.WaitGroup) error {
 		exch = new(lakebtc.LakeBTC)
 	case "localbitcoins":
 		exch = new(localbitcoins.LocalBitcoins)
+	case "ngkex":
+		exch = new(ngkex.NGKEX)
 	case "okcoin international":
 		exch = new(okcoin.OKCoin)
 	case "okex":

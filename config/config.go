@@ -951,7 +951,6 @@ func (c *Config) CheckWebserverConfigValues() error {
 // CheckCurrencyConfigValues checks to see if the currency config values are correct or not
 func (c *Config) CheckCurrencyConfigValues() error {
 	fxProviders := forexprovider.GetAvailableForexProviders()
-	//fxProviders := forexprovider.GetSupportedForexProviders()
 
 	if len(fxProviders) == 0 {
 		return errors.New("no forex providers available")
@@ -1352,10 +1351,11 @@ func (c *Config) ReadConfig(configPath string) error {
 			m.Lock()
 			IsInitialSetup = true
 			m.Unlock()
-			if c.PromptForConfigEncryption() {
-				c.EncryptConfig = configFileEncryptionEnabled
-				return c.SaveConfig(defaultPath)
-			}
+			// ###GZ
+			//if c.PromptForConfigEncryption() {
+			//	c.EncryptConfig = configFileEncryptionEnabled
+			//	return c.SaveConfig(defaultPath)
+			//}
 		}
 	} else {
 		errCounter := 0
