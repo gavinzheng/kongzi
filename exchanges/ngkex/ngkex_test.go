@@ -6,7 +6,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"io/ioutil"
-	"strconv"
 	"strings"
 	"testing"
 
@@ -21,10 +20,10 @@ import (
 
 // Please supply you own test keys here for due diligence testing.
 const (
-	apiKey                  = ""
-	apiSecret               = ""
+	apiKey                  = "dRSfPyI9mRSNCuBkGssXDpiMHPlW0f2FTELWS3oDRcJSK0p3C9iqWaLULlGliAK0"
+	apiSecret               = "YoWuaA1N9tIiWTu9qujaaeJfzjaMrHYvWe2z36CUgDp2YpnG7J0G3XAFAwMyJzwr"
 	canManipulateRealOrders = false
-	testSymbol              = "btcusdt"
+	testSymbol              = "BGVUSDT"
 )
 
 var h NGKEX
@@ -36,8 +35,8 @@ func TestSetDefaults(t *testing.T) {
 
 func TestSetup(t *testing.T) {
 	cfg := config.GetConfig()
-	cfg.LoadConfig("../../testdata/configtest.json")
-	hConfig, err := cfg.GetExchangeConfig("Huobi")
+	cfg.LoadConfig("../../config.json")
+	hConfig, err := cfg.GetExchangeConfig("Ngkex")
 	if err != nil {
 		t.Error("Test Failed - Huobi Setup() init error")
 	}
@@ -91,9 +90,12 @@ func setupWsTests(t *testing.T) {
 
 func TestGetSpotKline(t *testing.T) {
 	t.Parallel()
+	//h.APIUrl	= "https://api.ngkex.io/openapi"
+	h.SetDefaults()
+	h.Verbose = true
 	_, err := h.GetSpotKline(KlinesRequestParams{
 		Symbol: testSymbol,
-		Period: TimeIntervalHour,
+		Period: TimeIntervalFiveMinutes,
 		Size:   0,
 	})
 	if err != nil {
@@ -103,6 +105,8 @@ func TestGetSpotKline(t *testing.T) {
 
 func TestGetMarketDetailMerged(t *testing.T) {
 	t.Parallel()
+	h.SetDefaults()
+	h.Verbose = true
 	_, err := h.GetMarketDetailMerged(testSymbol)
 	if err != nil {
 		t.Errorf("Test failed - Huobi TestGetMarketDetailMerged: %s", err)
@@ -129,29 +133,29 @@ func TestGetTrades(t *testing.T) {
 	}
 }
 
-func TestGetLatestSpotPrice(t *testing.T) {
-	t.Parallel()
-	_, err := h.GetLatestSpotPrice(testSymbol)
-	if err != nil {
-		t.Errorf("Test failed - Huobi GetLatestSpotPrice: %s", err)
-	}
-}
-
-func TestGetTradeHistory(t *testing.T) {
-	t.Parallel()
-	_, err := h.GetTradeHistory(testSymbol, "50")
-	if err != nil {
-		t.Errorf("Test failed - Huobi TestGetTradeHistory: %s", err)
-	}
-}
-
-func TestGetMarketDetail(t *testing.T) {
-	t.Parallel()
-	_, err := h.GetMarketDetail(testSymbol)
-	if err != nil {
-		t.Errorf("Test failed - Huobi TestGetTradeHistory: %s", err)
-	}
-}
+//func TestGetLatestSpotPrice(t *testing.T) {
+//	t.Parallel()
+//	_, err := h.GetLatestSpotPrice(testSymbol)
+//	if err != nil {
+//		t.Errorf("Test failed - Huobi GetLatestSpotPrice: %s", err)
+//	}
+//}
+//
+//func TestGetTradeHistory(t *testing.T) {
+//	t.Parallel()
+//	_, err := h.GetTradeHistory(testSymbol, "50")
+//	if err != nil {
+//		t.Errorf("Test failed - Huobi TestGetTradeHistory: %s", err)
+//	}
+//}
+//
+//func TestGetMarketDetail(t *testing.T) {
+//	t.Parallel()
+//	_, err := h.GetMarketDetail(testSymbol)
+//	if err != nil {
+//		t.Errorf("Test failed - Huobi TestGetTradeHistory: %s", err)
+//	}
+//}
 
 func TestGetSymbols(t *testing.T) {
 	t.Parallel()
@@ -161,13 +165,13 @@ func TestGetSymbols(t *testing.T) {
 	}
 }
 
-func TestGetCurrencies(t *testing.T) {
-	t.Parallel()
-	_, err := h.GetCurrencies()
-	if err != nil {
-		t.Errorf("Test failed - Huobi TestGetCurrencies: %s", err)
-	}
-}
+//func TestGetCurrencies(t *testing.T) {
+//	t.Parallel()
+//	_, err := h.GetCurrencies()
+//	if err != nil {
+//		t.Errorf("Test failed - Huobi TestGetCurrencies: %s", err)
+//	}
+//}
 
 func TestGetTimestamp(t *testing.T) {
 	t.Parallel()
@@ -180,6 +184,13 @@ func TestGetTimestamp(t *testing.T) {
 func TestGetAccounts(t *testing.T) {
 	t.Parallel()
 
+	h.SetDefaults()
+	h.APIUrl="https://api.ngkex.io"
+	h.Verbose = true
+	h.AuthenticatedAPISupport = true
+	h.APIKey = apiKey
+	h.APISecret = apiSecret
+	h.APIAuthPEMKey = "1"
 	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
 		t.Skip()
 	}
@@ -193,34 +204,36 @@ func TestGetAccounts(t *testing.T) {
 func TestGetAccountBalance(t *testing.T) {
 	t.Parallel()
 
+	h.SetDefaults()
+	h.APIUrl="https://api.ngkex.io"
+	h.Verbose = true
+	h.AuthenticatedAPISupport = true
+	h.APIKey = apiKey
+	h.APISecret = apiSecret
+	h.APIAuthPEMKey = "1"
 	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
 		t.Skip()
 	}
 
-	result, err := h.GetAccounts()
-	if err != nil {
-		t.Errorf("Test failed - Huobi GetAccounts: %s", err)
-	}
-
-	userID := strconv.FormatInt(result[0].ID, 10)
-	_, err = h.GetAccountBalance(userID)
+	// NGKEX
+	_, err := h.GetAccountBalance("")
 	if err != nil {
 		t.Errorf("Test failed - Huobi GetAccountBalance: %s", err)
 	}
 }
 
-func TestGetAggregatedBalance(t *testing.T) {
-	t.Parallel()
-
-	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
-		t.Skip()
-	}
-
-	_, err := h.GetAggregatedBalance()
-	if err != nil {
-		t.Errorf("Test failed - Huobi GetAggregatedBalance: %s", err)
-	}
-}
+//func TestGetAggregatedBalance(t *testing.T) {
+//	t.Parallel()
+//
+//	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
+//		t.Skip()
+//	}
+//
+//	_, err := h.GetAggregatedBalance()
+//	if err != nil {
+//		t.Errorf("Test failed - Huobi GetAggregatedBalance: %s", err)
+//	}
+//}
 
 func TestSpotNewOrder(t *testing.T) {
 	t.Parallel()
@@ -261,40 +274,40 @@ func TestGetOrder(t *testing.T) {
 	}
 }
 
-func TestGetMarginLoanOrders(t *testing.T) {
-	t.Parallel()
+//func TestGetMarginLoanOrders(t *testing.T) {
+//	t.Parallel()
+//
+//	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
+//		t.Skip()
+//	}
+//
+//	_, err := h.GetMarginLoanOrders(testSymbol, "", "", "", "", "", "", "")
+//	if err != nil {
+//		t.Errorf("Test failed - Huobi TestGetMarginLoanOrders: %s", err)
+//	}
+//}
 
-	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
-		t.Skip()
-	}
-
-	_, err := h.GetMarginLoanOrders(testSymbol, "", "", "", "", "", "", "")
-	if err != nil {
-		t.Errorf("Test failed - Huobi TestGetMarginLoanOrders: %s", err)
-	}
-}
-
-func TestGetMarginAccountBalance(t *testing.T) {
-	t.Parallel()
-
-	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
-		t.Skip()
-	}
-
-	_, err := h.GetMarginAccountBalance(testSymbol)
-	if err != nil {
-		t.Errorf("Test failed - Huobi TestGetMarginAccountBalance: %s", err)
-	}
-}
-
-func TestCancelWithdraw(t *testing.T) {
-	t.Parallel()
-
-	_, err := h.CancelWithdraw(1337)
-	if err == nil {
-		t.Error("Test failed - Huobi TestCancelWithdraw: Invalid withdraw-ID was valid")
-	}
-}
+//func TestGetMarginAccountBalance(t *testing.T) {
+//	t.Parallel()
+//
+//	if h.APIKey == "" || h.APISecret == "" || h.APIAuthPEMKey == "" {
+//		t.Skip()
+//	}
+//
+//	_, err := h.GetMarginAccountBalance(testSymbol)
+//	if err != nil {
+//		t.Errorf("Test failed - Huobi TestGetMarginAccountBalance: %s", err)
+//	}
+//}
+//
+//func TestCancelWithdraw(t *testing.T) {
+//	t.Parallel()
+//
+//	_, err := h.CancelWithdraw(1337)
+//	if err == nil {
+//		t.Error("Test failed - Huobi TestCancelWithdraw: Invalid withdraw-ID was valid")
+//	}
+//}
 
 func TestPEMLoadAndSign(t *testing.T) {
 	t.Parallel()
@@ -505,7 +518,9 @@ func TestSubmitOrder(t *testing.T) {
 		t.Errorf("Failed to get accounts. Err: %s", err)
 	}
 
-	response, err := h.SubmitOrder(p, exchange.BuyOrderSide, exchange.LimitOrderType, 1, 10, strconv.FormatInt(accounts[0].ID, 10))
+	// NGKEX
+	response, err := h.SubmitOrder(p, exchange.BuyOrderSide, exchange.LimitOrderType, 1, 10, accounts[0].ID)
+	//response, err := h.SubmitOrder(p, exchange.BuyOrderSide, exchange.LimitOrderType, 1, 10, strconv.FormatInt(accounts[0].ID, 10))
 	if areTestAPIKeysSet() && (err != nil || !response.IsOrderPlaced) {
 		t.Errorf("Order failed to be placed: %v", err)
 	} else if !areTestAPIKeysSet() && err == nil {

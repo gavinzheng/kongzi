@@ -64,7 +64,7 @@ func (h *NGKEX) Run() {
 
 		var currencies []string
 		for x := range exchangeProducts {
-			newCurrency := exchangeProducts[x].BaseCurrency + "-" + exchangeProducts[x].QuoteCurrency
+			newCurrency := exchangeProducts[x].BaseToken + "-" + exchangeProducts[x].QuoteToken
 			currencies = append(currencies, newCurrency)
 		}
 
@@ -197,62 +197,64 @@ func (h *NGKEX) GetAccountInfo() (exchange.AccountInfo, error) {
 	var info exchange.AccountInfo
 	info.Exchange = h.GetName()
 
-	accounts, err := h.GetAccountID()
-	if err != nil {
-		return info, err
-	}
+	//accounts, err := h.GetAccountID()
+	//if err != nil {
+	//	return info, err
+	//}
 
-	for _, account := range accounts {
-		var acc exchange.Account
-
-		acc.ID = strconv.FormatInt(account.ID, 10)
-
-		balances, err := h.GetAccountBalance(acc.ID)
-		if err != nil {
-			return info, err
-		}
-
-		var currencyDetails []exchange.AccountCurrencyInfo
-		for _, balance := range balances {
-			var frozen bool
-			if balance.Type == "frozen" {
-				frozen = true
-			}
-
-			var updated bool
-			for i := range currencyDetails {
-				if currencyDetails[i].CurrencyName == currency.NewCode(balance.Currency) {
-					if frozen {
-						currencyDetails[i].Hold = balance.Balance
-					} else {
-						currencyDetails[i].TotalValue = balance.Balance
-					}
-					updated = true
-				}
-			}
-
-			if updated {
-				continue
-			}
-
-			if frozen {
-				currencyDetails = append(currencyDetails,
-					exchange.AccountCurrencyInfo{
-						CurrencyName: currency.NewCode(balance.Currency),
-						Hold:         balance.Balance,
-					})
-			} else {
-				currencyDetails = append(currencyDetails,
-					exchange.AccountCurrencyInfo{
-						CurrencyName: currency.NewCode(balance.Currency),
-						TotalValue:   balance.Balance,
-					})
-			}
-		}
-
-		acc.Currencies = currencyDetails
-		info.Accounts = append(info.Accounts, acc)
-	}
+	//for _, account := range accounts {
+	//	var acc exchange.Account
+	//
+	//	// NGKEX
+	//	acc.ID = account.ID
+	//	//acc.ID = strconv.FormatInt(account.ID, 10)
+	//
+	//	balances, err := h.GetAccountBalance(acc.ID)
+	//	if err != nil {
+	//		return info, err
+	//	}
+	//
+	//	var currencyDetails []exchange.AccountCurrencyInfo
+	//	for _, balance := range balances {
+	//		var frozen bool
+	//		if balance.Type == "frozen" {
+	//			frozen = true
+	//		}
+	//
+	//		var updated bool
+	//		for i := range currencyDetails {
+	//			if currencyDetails[i].CurrencyName == currency.NewCode(balance.Currency) {
+	//				if frozen {
+	//					currencyDetails[i].Hold = balance.Balance
+	//				} else {
+	//					currencyDetails[i].TotalValue = balance.Balance
+	//				}
+	//				updated = true
+	//			}
+	//		}
+	//
+	//		if updated {
+	//			continue
+	//		}
+	//
+	//		if frozen {
+	//			currencyDetails = append(currencyDetails,
+	//				exchange.AccountCurrencyInfo{
+	//					CurrencyName: currency.NewCode(balance.Currency),
+	//					Hold:         balance.Balance,
+	//				})
+	//		} else {
+	//			currencyDetails = append(currencyDetails,
+	//				exchange.AccountCurrencyInfo{
+	//					CurrencyName: currency.NewCode(balance.Currency),
+	//					TotalValue:   balance.Balance,
+	//				})
+	//		}
+	//	}
+	//
+	//	acc.Currencies = currencyDetails
+	//	info.Accounts = append(info.Accounts, acc)
+	//}
 
 	return info, nil
 }
@@ -337,20 +339,20 @@ func (h *NGKEX) CancelOrder(order *exchange.OrderCancellation) error {
 // CancelAllOrders cancels all orders associated with a currency pair
 func (h *NGKEX) CancelAllOrders(orderCancellation *exchange.OrderCancellation) (exchange.CancelAllOrdersResponse, error) {
 	var cancelAllOrdersResponse exchange.CancelAllOrdersResponse
-	for _, currency := range h.GetEnabledCurrencies() {
-		resp, err := h.CancelOpenOrdersBatch(orderCancellation.AccountID, exchange.FormatExchangeCurrency(h.Name, currency).String())
-		if err != nil {
-			return cancelAllOrdersResponse, err
-		}
-
-		if resp.Data.FailedCount > 0 {
-			return cancelAllOrdersResponse, fmt.Errorf("%v orders failed to cancel", resp.Data.FailedCount)
-		}
-
-		if resp.Status == "error" {
-			return cancelAllOrdersResponse, errors.New(resp.ErrorMessage)
-		}
-	}
+	//for _, currency := range h.GetEnabledCurrencies() {
+	//	resp, err := h.CancelOpenOrdersBatch(orderCancellation.AccountID, exchange.FormatExchangeCurrency(h.Name, currency).String())
+	//	if err != nil {
+	//		return cancelAllOrdersResponse, err
+	//	}
+	//
+	//	if resp.Data.FailedCount > 0 {
+	//		return cancelAllOrdersResponse, fmt.Errorf("%v orders failed to cancel", resp.Data.FailedCount)
+	//	}
+	//
+	//	if resp.Status == "error" {
+	//		return cancelAllOrdersResponse, errors.New(resp.ErrorMessage)
+	//	}
+	//}
 
 	return cancelAllOrdersResponse, nil
 }

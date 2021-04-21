@@ -109,9 +109,9 @@ func main() {
 		log.Errorf("Failed to setup logger reason: %s", err)
 	}
 
-	ActivateNTP()
-	ActivateConnectivityMonitor()
-	AdjustGoMaxProcs()
+//	ActivateNTP()
+//	ActivateConnectivityMonitor()
+//	AdjustGoMaxProcs()
 
 	log.Debugf("Bot '%s' started.\n", bot.config.Name)
 	log.Debugf("Bot dry run mode: %v.\n", common.IsEnabled(bot.dryRun))
@@ -158,7 +158,7 @@ func main() {
 	}
 
 	bot.portfolio = &portfolio.Portfolio
-	bot.portfolio.SeedPortfolio(bot.config.Portfolio)  //???
+	bot.portfolio.SeedPortfolio(bot.config.Portfolio)
 	SeedExchangeAccountInfo(GetAllEnabledExchangeAccountInfo().Data)
 
 	ActivateWebServer()
@@ -166,8 +166,8 @@ func main() {
 	go portfolio.StartPortfolioWatcher()
 
 	go TickerUpdaterRoutine()
-	go OrderbookUpdaterRoutine()
-	go WebsocketRoutine(*verbosity)
+//	go OrderbookUpdaterRoutine()
+//	go WebsocketRoutine(*verbosity)
 
 	<-bot.shutdown
 	Shutdown()

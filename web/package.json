@@ -48,7 +48,7 @@
     "start:web": "ng serve --o"
   },
   "dependencies": {
-    "node-sass": "^4.10.0",
+    "cnpm": "^6.1.1",
     "rxjs-compat": "^6.3.3",
     "rxjs-tslint": "^0.1.5"
   },
@@ -90,10 +90,13 @@
     "karma-coverage-istanbul-reporter": "^2.0.4",
     "karma-jasmine": "^1.1.2",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "node-sass": "^4.14.1",
     "npm-run-all": "^4.1.3",
     "protractor": "^5.4.1",
     "replace": "^1.0.0",
     "rxjs": "^6.3.3",
+    "sass-loader": "^7.3.1",
+    "style-loader": "^2.0.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6",

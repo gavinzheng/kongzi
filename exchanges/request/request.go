@@ -442,10 +442,10 @@ func (r *Requester) SendPayload(method, path string, headers map[string]string, 
 		log.Debugf("DumpRequest:\n%s", dump)
 	}
 
-	if !r.RequiresRateLimiter() {
-		r.unlock()
+	//if !r.RequiresRateLimiter() {
+	    r.unlock()
 		return r.DoRequest(req, path, body, result, authRequest, verbose, httpDebugging)
-	}
+	//}
 
 	if len(r.Jobs) == maxRequestJobs {
 		r.unlock()

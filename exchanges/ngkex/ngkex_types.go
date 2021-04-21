@@ -2,7 +2,7 @@ package ngkex
 
 import "gotradebot/currency"
 
-// Response stores the Huobi response information
+// Response stores the ngkex response information
 type Response struct {
 	Status       string `json:"status"`
 	Channel      string `json:"ch"`
@@ -11,16 +11,38 @@ type Response struct {
 	ErrorMessage string `json:"err-msg"`
 }
 
-// KlineItem stores a kline item
+// KlineItem stores a kline item -- NGKEX
 type KlineItem struct {
-	ID     int64   `json:"id"`
-	Open   float64 `json:"open"`
-	Close  float64 `json:"close"`
-	Low    float64 `json:"low"`
-	High   float64 `json:"high"`
-	Amount float64 `json:"amount"`
-	Vol    float64 `json:"vol"`
-	Count  int     `json:"count"`
+	//ID     int64   `json:"id"`
+	//Open   float64 `json:"open"`
+	//Close  float64 `json:"close"`
+	//Low    float64 `json:"low"`
+	//High   float64 `json:"high"`
+	//Amount float64 `json:"amount"`
+	//Vol    float64 `json:"vol"`
+	//Count  int     `json:"count"`
+	//Opentime	int64
+	//Open		float64
+	//High		float64
+	//Low			float64
+	//Close		float64
+	//Volume		float64
+	//Closetime	int64
+	//QAV			float64	// Quote asset Volume
+	//NoT			int
+	//TBAV		float64`// Taker buy base asset volume`
+	//TBQV		float64	// Taker buy quote asset volume
+	Opentime	float64
+	Open		string
+	High		string
+	Low			string
+	Close		string
+	Volume		string
+	Closetime	float64
+	QAV			string	// Quote asset Volume
+	NoT			float64
+	TBAV		string  // Taker buy base asset volume`
+	TBQV		string	// Taker buy quote asset volume
 }
 
 // CancelOpenOrdersBatch stores open order batch response data
@@ -37,10 +59,12 @@ type CancelOpenOrdersBatch struct {
 // DetailMerged stores the ticker detail merged data
 type DetailMerged struct {
 	Detail
-	Version int       `json:"version"`
-	Ask     []float64 `json:"ask"`
-	Bid     []float64 `json:"bid"`
-}
+	//Version int       `json:"version"`
+	time 	int64	  		`json:"time"`
+	//Ask     [][2]float64 	`json:"asks"`
+	//Bid     [][2]float64 	`json:"bids"`
+	Ask     []float64 	`json:"asks"`
+	Bid     []float64 	`json:"bids"`}
 
 // OrderBookDataRequestParamsType var for request param types
 type OrderBookDataRequestParamsType string
@@ -99,21 +123,24 @@ type Detail struct {
 	Volume    float64 `json:"vol"`
 }
 
-// Symbol stores the symbol data
+// Symbol stores the symbol data -- NGKEX
 type Symbol struct {
-	BaseCurrency    string `json:"base-currency"`
-	QuoteCurrency   string `json:"quote-currency"`
-	PricePrecision  int    `json:"price-precision"`
-	AmountPrecision int    `json:"amount-precision"`
-	SymbolPartition string `json:"symbol-partition"`
+	//BaseCurrency    string `json:"base-currency"`
+	//QuoteCurrency   string `json:"quote-currency"`
+	//PricePrecision  int    `json:"price-precision"`
+	//AmountPrecision int    `json:"amount-precision"`
+	//SymbolPartition string `json:"symbol-partition"`
+	Symbol			string `json:"symbol"`
+	QuoteToken		string `json:"quoteToken"`
+	BaseToken		string `json:"baseToken"`
 }
 
-// Account stores the account data
+// Account stores the account data -- NGKEX
 type Account struct {
-	ID     int64  `json:"id"`
-	Type   string `json:"type"`
-	State  string `json:"state"`
-	UserID int64  `json:"user-id"`
+	ID     string  `json:"accountId"`
+	Name   string `json:"accountName"`
+	Type   int64  `json:"accountType"`
+	Index  int64  `json:"accountIndex"`
 }
 
 // AccountBalance stores the user all account balance
@@ -124,18 +151,21 @@ type AccountBalance struct {
 	AccountBalanceDetails []AccountBalanceDetail `json:"list"`
 }
 
-// AccountBalanceDetail stores the user account balance
+// AccountBalanceDetail stores the user account balance -- NGKEX
 type AccountBalanceDetail struct {
-	Currency string  `json:"currency"`
-	Type     string  `json:"type"`
-	Balance  float64 `json:"balance,string"`
+	AssetId  	string  `json:"assetId"`
+	AssetName 	string  `json:"assetName"`
+	Total  		string 	`json:"total"`
+	Asset 	 	string  `json:"asset"`
+	Free     	string 	`json:"free"`
+	Locked   	string 	`json:"locked"`
 }
 
 // AggregatedBalance stores balances of all the sub-account
-type AggregatedBalance struct {
-	Currency string  `json:"currency"`
-	Balance  float64 `json:"balance,string"`
-}
+//type AggregatedBalance struct {
+//	Currency string  `json:"currency"`
+//	Balance  float64 `json:"balance,string"`
+//}
 
 // CancelOrderBatch stores the cancel order batch data
 type CancelOrderBatch struct {
@@ -257,15 +287,15 @@ type TimeInterval string
 
 // TimeInterval vars
 var (
-	TimeIntervalMinute         = TimeInterval("1min")
-	TimeIntervalFiveMinutes    = TimeInterval("5min")
-	TimeIntervalFifteenMinutes = TimeInterval("15min")
-	TimeIntervalThirtyMinutes  = TimeInterval("30min")
-	TimeIntervalHour           = TimeInterval("60min")
-	TimeIntervalDay            = TimeInterval("1day")
-	TimeIntervalWeek           = TimeInterval("1week")
-	TimeIntervalMohth          = TimeInterval("1mon")
-	TimeIntervalYear           = TimeInterval("1year")
+	TimeIntervalMinute         = TimeInterval("1m")
+	TimeIntervalFiveMinutes    = TimeInterval("5m")
+	TimeIntervalFifteenMinutes = TimeInterval("15m")
+	TimeIntervalThirtyMinutes  = TimeInterval("30m")
+	TimeIntervalHour           = TimeInterval("60m")
+	TimeIntervalDay            = TimeInterval("1d")
+	TimeIntervalWeek           = TimeInterval("1w")
+	TimeIntervalMohth          = TimeInterval("1M")
+	TimeIntervalYear           = TimeInterval("1y")
 )
 
 // WsRequest defines a request data structure
